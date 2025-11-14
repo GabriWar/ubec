@@ -1,0 +1,150 @@
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.status-indicator.active {
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.status-indicator.small {
+  padding: 8px 12px;
+  gap: 8px;
+}
+
+.status-indicator.large {
+  padding: 16px 20px;
+  gap: 16px;
+}
+
+.status-led {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-indicator.small .status-led {
+  width: 12px;
+  height: 12px;
+}
+
+.status-indicator.large .status-led {
+  width: 20px;
+  height: 20px;
+}
+
+.led-glow {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.led-core {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+/* LED OFF states */
+.status-led.off .led-core {
+  background: var(--text-tertiary);
+  border: 2px solid var(--border-color);
+}
+
+/* LED ON states */
+.status-led.success.on .led-core {
+  background: var(--success);
+  border: 2px solid var(--success);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.status-led.success.on .led-glow {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, transparent 70%);
+  opacity: 1;
+  animation: pulse-success 2s infinite;
+}
+
+.status-led.danger.on .led-core {
+  background: var(--danger);
+  border: 2px solid var(--danger);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+.status-led.danger.on .led-glow {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
+  opacity: 1;
+  animation: pulse-danger 1s infinite;
+}
+
+.status-led.warning.on .led-core {
+  background: var(--warning);
+  border: 2px solid var(--warning);
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
+.status-led.warning.on .led-glow {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.4) 0%, transparent 70%);
+  opacity: 1;
+  animation: pulse-warning 1.5s infinite;
+}
+
+.status-led.info.on .led-core {
+  background: var(--info);
+  border: 2px solid var(--info);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+}
+
+.status-led.info.on .led-glow {
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%);
+  opacity: 1;
+  animation: pulse-info 2s infinite;
+}
+
+@keyframes pulse-success {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+@keyframes pulse-danger {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes pulse-warning {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes pulse-info {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.status-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.status-indicator.small .status-label {
+  font-size: 12px;
+}
+
+.status-indicator.large .status-label {
+  font-size: 16px;
+}
+
+.status-indicator.inactive .status-label {
+  color: var(--text-tertiary);
+}

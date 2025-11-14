@@ -1,0 +1,172 @@
+.quadro-geracao {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding: 24px;
+  transition: background 0.3s ease;
+}
+
+.quadro-geracao.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  font-size: 18px;
+}
+
+.quadro-header {
+  background: var(--bg-secondary);
+  padding: 24px 32px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.quadro-header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.status-dot.connected {
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  animation: pulse-dot 2s infinite;
+}
+
+.status-dot.disconnected {
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+}
+
+.last-update {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.quadro-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .quadro-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.status-card,
+.temp-card,
+.disjuntor-card,
+.alerts-card,
+.outputs-card {
+  height: fit-content;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.temp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.disjuntor-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.disjuntor-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.disjuntor-status.fechado {
+  background: var(--success-light);
+  border: 3px solid var(--disjuntor-fechado);
+}
+
+.disjuntor-status.aberto {
+  background: var(--danger-light);
+  border: 3px solid var(--disjuntor-aberto);
+}
+
+.disjuntor-icon {
+  font-size: 72px;
+  line-height: 1;
+}
+
+.disjuntor-label {
+  font-size: 24px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-primary);
+}
+
+.disjuntor-status.fechado .disjuntor-label {
+  color: var(--disjuntor-fechado);
+}
+
+.disjuntor-status.aberto .disjuntor-label {
+  color: var(--disjuntor-aberto);
+}
+
+.outputs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.alerts-card {
+  grid-column: 1 / -1;
+}

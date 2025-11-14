@@ -1,0 +1,93 @@
+:root {
+  /* Light Theme Colors */
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #fafafa;
+
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-tertiary: #6b7280;
+
+  --border-color: #e0e0e0;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.15);
+
+  --success: #10b981;
+  --success-light: #d1fae5;
+  --danger: #ef4444;
+  --danger-light: #fee2e2;
+  --warning: #f59e0b;
+  --warning-light: #fef3c7;
+  --info: #3b82f6;
+  --info-light: #dbeafe;
+
+  --temp-normal: #10b981;
+  --temp-warning: #f59e0b;
+  --temp-critical: #ef4444;
+  --temp-bg: #f3f4f6;
+  --temp-bar-bg: #e5e7eb;
+
+  --disjuntor-fechado: #10b981;
+  --disjuntor-aberto: #ef4444;
+  --disjuntor-bg: #f9fafb;
+}
+
+[data-theme="dark"] {
+  /* Dark Theme Colors */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+
+  --border-color: #475569;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.5);
+
+  --success: #10b981;
+  --success-light: #064e3b;
+  --danger: #ef4444;
+  --danger-light: #7f1d1d;
+  --warning: #f59e0b;
+  --warning-light: #78350f;
+  --info: #3b82f6;
+  --info-light: #1e3a8a;
+
+  --temp-normal: #10b981;
+  --temp-warning: #f59e0b;
+  --temp-critical: #ef4444;
+  --temp-bg: #1e293b;
+  --temp-bar-bg: #334155;
+
+  --disjuntor-fechado: #10b981;
+  --disjuntor-aberto: #ef4444;
+  --disjuntor-bg: #1e293b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}

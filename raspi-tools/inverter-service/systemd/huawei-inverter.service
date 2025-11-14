@@ -1,0 +1,43 @@
+[Unit]
+Description=MTZ View - Huawei SUN2000 Inverter Service
+Documentation=file:///home/gabriel/Downloads/mtzview/inverter-service/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=gabriel
+Group=gabriel
+WorkingDirectory=/home/gabriel/Downloads/mtzview/inverter-service
+
+# Environment
+Environment="PATH=/home/gabriel/Downloads/mtzview/inverter-service/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+# Comando principal - AJUSTAR CONFORME NECESSÁRIO
+ExecStart=/home/gabriel/Downloads/mtzview/inverter-service/venv/bin/python3 main.py \
+    --serial-port /dev/ttyUSB0 \
+    --baudrate 9600 \
+    --slave-id 1 \
+    --poll-interval 30 \
+    --backend-url http://localhost:3001 \
+    --log-level INFO
+
+# Restart policy
+Restart=always
+RestartSec=10
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=huawei-inverter
+
+# Resource limits (opcional)
+# MemoryLimit=256M
+# CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target

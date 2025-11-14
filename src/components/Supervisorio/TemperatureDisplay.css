@@ -1,0 +1,141 @@
+.temperature-display {
+  background: var(--temp-bg);
+  border-radius: 12px;
+  padding: 20px;
+  border: 2px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.temperature-display.warning {
+  border-color: var(--temp-warning);
+  background: var(--warning-light);
+}
+
+.temperature-display.critical {
+  border-color: var(--temp-critical);
+  background: var(--danger-light);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+}
+
+.temp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.temp-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.temp-sensor {
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.temp-value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.temp-number {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.temperature-display.normal .temp-number {
+  color: var(--temp-normal);
+}
+
+.temperature-display.warning .temp-number {
+  color: var(--temp-warning);
+}
+
+.temperature-display.critical .temp-number {
+  color: var(--temp-critical);
+}
+
+.temp-unit {
+  font-size: 24px;
+  color: var(--text-secondary);
+  margin-left: 4px;
+}
+
+.temp-bar {
+  height: 8px;
+  background: var(--temp-bar-bg);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 16px 0;
+}
+
+.temp-bar-fill {
+  height: 100%;
+  transition: width 0.5s ease, background-color 0.3s ease;
+  border-radius: 4px;
+}
+
+.temp-bar-fill.normal {
+  background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+}
+
+.temp-bar-fill.warning {
+  background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
+}
+
+.temp-bar-fill.critical {
+  background: linear-gradient(90deg, #ef4444 0%, #f87171 100%);
+}
+
+.temp-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.temp-address {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: 'Courier New', monospace;
+}
+
+.temp-thresholds {
+  display: flex;
+  gap: 12px;
+}
+
+.threshold {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.threshold.warning {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+
+.threshold.critical {
+  background: var(--danger-light);
+  color: var(--danger);
+}
