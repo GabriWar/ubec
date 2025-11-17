@@ -24,10 +24,10 @@
     "type": "function",
     "z": "flow_clp_api",
     "name": "Iniciar Coleta",
-    "func": "global.set('clp_data', {});\nglobal.set('clp_timestamp', new Date().toISOString());\nreturn { payload: 'start' };",
+    "func": "global.set('clp_data', {});\nglobal.set('clp_timestamp', new Date().toISOString());\n\nreturn [\n    {payload: {fc: 3, unitid: 1, address: 36, quantity: 4}, topic: 'read_temps'},\n    {payload: {fc: 1, unitid: 1, address: 200, quantity: 10}, topic: 'read_outputs'},\n    {payload: {fc: 1, unitid: 1, address: 100, quantity: 14}, topic: 'read_inputs'}\n];",
     "x": 360,
     "y": 100,
-    "wires": [["read_temps", "read_outputs", "read_inputs"]]
+    "wires": [["read_temps"], ["read_outputs"], ["read_inputs"]]
   },
   {
     "id": "read_temps",
@@ -73,7 +73,7 @@
     "type": "function",
     "z": "flow_clp_api",
     "name": "Processar Temperaturas",
-    "func": "const buffer = msg.payload;\nconst registers = [];\n\nfor (let i = 0; i < buffer.length; i += 2) {\n    registers.push(buffer.readInt16BE(i));\n}\n\nconst temps = {\n    ambiente: registers[0] / 10,\n    quadro: registers[1] / 10,\n    modulo: registers[2] / 10,\n    trafo: registers[3] / 10\n};\n\nlet data = global.get('clp_data') || {};\ndata.temperaturas = temps;\nglobal.set('clp_data', data);\n\nif (data.temperaturas && data.saidas && data.entradas) {\n    return { payload: 'trigger_send' };\n}\n\nreturn null;",
+    "func": "let registers = [];\n\nif (msg.payload.buffer && Buffer.isBuffer(msg.payload.buffer)) {\n    const buffer = msg.payload.buffer;\n    for (let i = 0; i < buffer.length; i += 2) {\n        registers.push(buffer.readInt16BE(i));\n    }\n} else if (Array.isArray(msg.payload.data)) {\n    registers = msg.payload.data;\n} else if (Array.isArray(msg.payload)) {\n    registers = msg.payload;\n} else {\n    node.error('Formato de dados invalido: ' + JSON.stringify(msg.payload));\n    return null;\n}\n\nconst temps = {\n    ambiente: registers[0] / 10,\n    quadro: registers[1] / 10,\n    modulo: registers[2] / 10,\n    trafo: registers[3] / 10\n};\n\nlet data = global.get('clp_data') || {};\ndata.temperaturas = temps;\nglobal.set('clp_data', data);\n\nif (data.temperaturas && data.saidas && data.entradas) {\n    return { payload: 'trigger_send' };\n}\n\nreturn null;",
     "x": 820,
     "y": 80,
     "wires": [["aggregate_and_send"]]
@@ -83,7 +83,7 @@
     "type": "function",
     "z": "flow_clp_api",
     "name": "Processar Saidas",
-    "func": "const coils = msg.payload;\n\nconst saidas = {\n    comunicacao_ok: coils[0] || false,\n    usina_gerando: coils[1] || false,\n    falha: coils[2] || false,\n    alarme: coils[3] || false,\n    emergencia_inversores: coils[4] || false,\n    reset_rasp: coils[5] || false,\n    reset_link_3g: coils[6] || false,\n    reserva_1: coils[7] || false,\n    reserva_2: coils[8] || false,\n    reserva_3: coils[9] || false\n};\n\nlet data = global.get('clp_data') || {};\ndata.saidas = saidas;\nglobal.set('clp_data', data);\n\nif (data.temperaturas && data.saidas && data.entradas) {\n    return { payload: 'trigger_send' };\n}\n\nreturn null;",
+    "func": "let coils = [];\n\nif (Array.isArray(msg.payload.data)) {\n    coils = msg.payload.data;\n} else if (Array.isArray(msg.payload)) {\n    coils = msg.payload;\n} else {\n    node.error('Formato de dados invalido: ' + JSON.stringify(msg.payload));\n    return null;\n}\n\nconst saidas = {\n    comunicacao_ok: coils[0] || false,\n    usina_gerando: coils[1] || false,\n    falha: coils[2] || false,\n    alarme: coils[3] || false,\n    emergencia_inversores: coils[4] || false,\n    reset_rasp: coils[5] || false,\n    reset_link_3g: coils[6] || false,\n    reserva_1: coils[7] || false,\n    reserva_2: coils[8] || false,\n    reserva_3: coils[9] || false\n};\n\nlet data = global.get('clp_data') || {};\ndata.saidas = saidas;\nglobal.set('clp_data', data);\n\nif (data.temperaturas && data.saidas && data.entradas) {\n    return { payload: 'trigger_send' };\n}\n\nreturn null;",
     "x": 820,
     "y": 120,
     "wires": [["aggregate_and_send"]]
@@ -93,7 +93,7 @@
     "type": "function",
     "z": "flow_clp_api",
     "name": "Processar Entradas",
-    "func": "const inputs = msg.payload;\n\nconst entradas = {\n    dj_geral_aberto: inputs[0] || false,\n    dj_geral_fechado: inputs[1] || false,\n    reserva_i02: inputs[2] || false,\n    reserva_i03: inputs[3] || false,\n    reserva_i04: inputs[4] || false,\n    reserva_i05: inputs[5] || false,\n    reserva_i06: inputs[6] || false,\n    reserva_i07: inputs[7] || false,\n    reserva_i08: inputs[8] || false,\n    reserva_i09: inputs[9] || false,\n    servico_auxiliar: inputs[10] || false,\n    botao_close: inputs[11] || false,\n    botao_trip: inputs[12] || false,\n    botao_emergencia: inputs[13] || false\n};\n\nlet data = global.get('clp_data') || {};\ndata.entradas = entradas;\nglobal.set('clp_data', data);\n\nif (data.temperaturas && data.saidas && data.entradas) {\n    return { payload: 'trigger_send' };\n}\n\nreturn null;",
+    "func": "let inputs = [];\n\nif (Array.isArray(msg.payload.data)) {\n    inputs = msg.payload.data;\n} else if (Array.isArray(msg.payload)) {\n    inputs = msg.payload;\n} else {\n    node.error('Formato de dados invalido: ' + JSON.stringify(msg.payload));\n    return null;\n}\n\nconst entradas = {\n    dj_geral_aberto: inputs[0] || false,\n    dj_geral_fechado: inputs[1] || false,\n    reserva_i02: inputs[2] || false,\n    reserva_i03: inputs[3] || false,\n    reserva_i04: inputs[4] || false,\n    reserva_i05: inputs[5] || false,\n    reserva_i06: inputs[6] || false,\n    reserva_i07: inputs[7] || false,\n    reserva_i08: inputs[8] || false,\n    reserva_i09: inputs[9] || false,\n    servico_auxiliar: inputs[10] || false,\n    botao_close: inputs[11] || false,\n    botao_trip: inputs[12] || false,\n    botao_emergencia: inputs[13] || false\n};\n\nlet data = global.get('clp_data') || {};\ndata.entradas = entradas;\nglobal.set('clp_data', data);\n\nif (data.temperaturas && data.saidas && data.entradas) {\n    return { payload: 'trigger_send' };\n}\n\nreturn null;",
     "x": 820,
     "y": 160,
     "wires": [["aggregate_and_send"]]
