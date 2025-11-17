@@ -1,0 +1,129 @@
+================================================================================
+INSTRUÇÕES PARA ADICIONAR MAPEAMENTO MODBUS MANUALMENTE NO SOMACHINE
+================================================================================
+
+IMPORTANTE: Adicione estes rungs no FINAL da seção "Mapeamento Modbus",
+após o rung "MAP MODBUS - RESERVA Q09"
+
+================================================================================
+TESTE INICIAL - Adicione apenas estes 2 rungs primeiro:
+================================================================================
+
+--- RUNG 1: M100 -> MW500 (SET) ---
+Linguagem: LD (Ladder)
+
+Linha 1:
+  [%M100]----[%MW500 := 1]
+
+Ou em Instruction List (IL):
+  LD    %M100
+  [ %MW500 := 1 ]
+
+Nome do Rung: MODBUS MAP: M100 SET MW500
+
+
+--- RUNG 2: M100 -> MW500 (RESET) ---
+Linguagem: LD (Ladder)
+
+Linha 1:
+  [/%M100]----[%MW500 := 0]
+
+Ou em Instruction List (IL):
+  LDN   %M100
+  [ %MW500 := 0 ]
+
+Nome do Rung: MODBUS MAP: M100 RESET MW500
+
+
+================================================================================
+COMO ADICIONAR NO SOMACHINE:
+================================================================================
+
+1. Abra PROJETO2_com_modbus.smbp no SoMachine
+
+2. Navegue até a POU principal (provavelmente "PLC_PRG" ou "MAST")
+
+3. Role até o final dos rungs de mapeamento Modbus
+
+4. Clique com botão direito -> "Insert Rung" (ou pressione Insert)
+
+5. Para o RUNG 1:
+   - Adicione um contato normal (---| |---) e selecione %M100
+   - Adicione uma operação e digite: %MW500 := 1
+   - Nomeie o rung: MODBUS MAP: M100 SET MW500
+
+6. Insira outro rung
+
+7. Para o RUNG 2:
+   - Adicione um contato invertido (---|/|---) e selecione %M100
+   - Adicione uma operação e digite: %MW500 := 0
+   - Nomeie o rung: MODBUS MAP: M100 RESET MW500
+
+8. Compile o projeto (F7)
+
+9. Transfira para o simulador
+
+10. No simulador, force %M100 = TRUE
+
+11. Execute o script Python:
+    python.exe .\test_modbus_direct.py
+
+12. Verifique se MW500 = 1
+
+
+================================================================================
+SE O TESTE FUNCIONAR, ADICIONE OS RUNGS COMPLETOS:
+================================================================================
+
+ENTRADAS (M100-113 -> MW500-513):
+----------------------------------
+Para cada entrada de M100 a M113, adicione 2 rungs:
+
+M100 -> MW500 (já adicionado no teste)
+M101 -> MW501
+M102 -> MW502
+M103 -> MW503
+M104 -> MW504
+M105 -> MW505
+M106 -> MW506
+M107 -> MW507
+M108 -> MW508
+M109 -> MW509
+M110 -> MW510
+M111 -> MW511
+M112 -> MW512
+M113 -> MW513
+
+Padrão para cada um:
+  RUNG A: LD %M{N}     -> [ %MW{500+N-100} := 1 ]
+  RUNG B: LDN %M{N}    -> [ %MW{500+N-100} := 0 ]
+
+
+SAÍDAS (M200-209 -> MW600-609):
+--------------------------------
+Para cada saída de M200 a M209, adicione 2 rungs:
+
+M200 -> MW600
+M201 -> MW601
+M202 -> MW602
+M203 -> MW603
+M204 -> MW604
+M205 -> MW605
+M206 -> MW606
+M207 -> MW607
+M208 -> MW608
+M209 -> MW609
+
+Padrão para cada um:
+  RUNG A: LD %M{N}     -> [ %MW{600+N-200} := 1 ]
+  RUNG B: LDN %M{N}    -> [ %MW{600+N-200} := 0 ]
+
+
+================================================================================
+TOTAL: 48 RUNGS (24 para entradas + 24 para saídas)
+================================================================================
+
+DICA: No SoMachine você pode copiar/colar rungs!
+      Adicione os 2 primeiros, depois copie e cole mudando apenas os números.
+
+================================================================================
