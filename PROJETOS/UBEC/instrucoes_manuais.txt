@@ -1,0 +1,104 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    INSTRUÇÕES PARA CORREÇÃO MANUAL                           ║
+║              (Mais rápido que fazer um script complexo)                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+PARA CADA RUNG LISTADO ABAIXO, FAÇA:
+
+1. Clique no rung para editar
+2. Posicione o cursor DEPOIS da linha [ %MWxxx := 1 ]
+3. Pressione ENTER para criar nova linha
+4. Digite: LDN [variável]
+5. Pressione ENTER
+6. Digite: [ %MWxxx := 0 ]
+7. Salve (Ctrl+S)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO 1: Saídas (Rungs Principais)
+───────────────────────────────────────────────────────────────────────────────
+
+Rung0 - COMUNICAÇÃO OK:
+  Após: [ %MW600 := 1 ]
+  Adicionar:
+    LDN   %M0
+    [ %MW600 := 0 ]
+
+Rung1 - STATUS USINA GERANDO:
+  Após: [ %MW601 := 1 ]
+  Adicionar:
+    LDN   %M1
+    [ %MW601 := 0 ]
+
+Rung2 - FALHA:
+  Após: [ %MW602 := 1 ]
+  Adicionar:
+    LDN   %M2
+    [ %MW602 := 0 ]
+
+Rung3 - ALARME SONORO:
+  Após: [ %MW603 := 1 ]
+  Adicionar:
+    LDN   %M3
+    [ %MW603 := 0 ]
+
+Rung4 - EMERGÊNCIA INVERSORES:
+  Após: [ %MW604 := 1 ]
+  Adicionar:
+    LDN   %Q0.4
+    [ %MW604 := 0 ]
+
+Rung5 - RESET LINK 3G:
+  Após: [ %MW606 := 1 ]
+  Adicionar:
+    LDN   %Q0.6
+    [ %MW606 := 0 ]
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO 2: Entradas (dentro de "2 - Entradas")
+───────────────────────────────────────────────────────────────────────────────
+
+STATUS DISJUNTOR GERAL ABERTO:
+  Após: [ %MW500 := 1 ]
+  Adicionar:
+    LDN   %I0.0
+    [ %MW500 := 0 ]
+
+STATUS DISJUNTOR GERAL FECHADO:
+  Após: [ %MW501 := 1 ]
+  Adicionar:
+    LDN   %I0.1
+    [ %MW501 := 0 ]
+
+STATUS SERVIÇO AUXILIAR:
+  Após: [ %MW510 := 1 ]
+  Adicionar:
+    LDN   %I0.10
+    [ %MW510 := 0 ]
+
+BOTÃO FECHA:
+  Após: [ %MW511 := 1 ]
+  Adicionar:
+    LDN   %I0.11
+    [ %MW511 := 0 ]
+
+BOTÃO ABRE:
+  Após: [ %MW512 := 1 ]
+  Adicionar:
+    LDN   %I0.12
+    [ %MW512 := 0 ]
+
+BOTÃO EMERGÊNCIA:
+  Após: [ %MW513 := 1 ]
+  Adicionar:
+    LDN   %I0.13
+    [ %MW513 := 0 ]
+
+═══════════════════════════════════════════════════════════════════════════════
+
+TOTAL: 12 rungs para corrigir
+
+TEMPO ESTIMADO: 5-10 minutos
+
+═══════════════════════════════════════════════════════════════════════════════

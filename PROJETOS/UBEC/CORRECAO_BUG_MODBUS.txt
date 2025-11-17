@@ -1,0 +1,307 @@
+═══════════════════════════════════════════════════════════════════════════════
+🐛 CORREÇÃO DO BUG DE MAPEAMENTO MODBUS - PROJETO UBEC
+═══════════════════════════════════════════════════════════════════════════════
+
+PROBLEMA IDENTIFICADO:
+━━━━━━━━━━━━━━━━━━━━
+Os registradores MW500-513 (Entradas) e MW600-609 (Saídas) estão sendo setados
+para 1, mas NUNCA resetados para 0. Isso faz com que os valores fiquem travados.
+
+CAUSA:
+━━━━━━
+A instrução [ %MW500 := 1 ] só executa quando a condição é TRUE.
+Quando a condição vira FALSE, a instrução NÃO executa e o valor permanece 1.
+
+═══════════════════════════════════════════════════════════════════════════════
+SOLUÇÃO - CORREÇÃO NO SOMACHINE BASIC
+═══════════════════════════════════════════════════════════════════════════════
+
+🔧 MÉTODO 1: ATRIBUIÇÃO DIRETA (MAIS SIMPLES E EFICIENTE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Para cada rung no ladder "Mapeamento Modbus", SUBSTITUA:
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║ ANTES (ERRADO):                                                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  LD    %I0.0                                                               ║
+║  ST    %M100                                                               ║
+║  [ %MW500 := 1 ]                                                           ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║ DEPOIS (CORRETO):                                                          ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  LD    %I0.0                                                               ║
+║  ST    %M100                                                               ║
+║  LD    1                                                                   ║
+║  [ %MW500 := %I0.0 ]                                                       ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+IMPORTANTE: A instrução [ %MW500 := %I0.0 ] converte automaticamente:
+  - %I0.0 = 1  →  MW500 = 1
+  - %I0.0 = 0  →  MW500 = 0
+
+═══════════════════════════════════════════════════════════════════════════════
+LISTA COMPLETA DE CORREÇÕES
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO: MAPEAMENTO MODBUS
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ENTRADAS (MW500-513)                                                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+RUNG: MAP MODBUS - DJ GERAL ABERTO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %I0.0
+  ST    %M100
+  LD    1
+  [ %MW500 := %I0.0 ]
+
+RUNG: MAP MODBUS - DJ GERAL FECHADO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %I0.1
+  ST    %M101
+  LD    1
+  [ %MW501 := %I0.1 ]
+
+RUNG: MAP MODBUS - RESERVA I02
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %I0.2
+  ST    %M102
+  LD    1
+  [ %MW502 := %I0.2 ]
+
+RUNG: MAP MODBUS - RESERVA I03
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %I0.3
+  ST    %M103
+  LD    1
+  [ %MW503 := %I0.3 ]
+
+RUNG: MAP MODBUS - RESERVA I04
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %I0.4
+  ST    %M104
+  LD    1
+  [ %MW504 := %I0.4 ]
+
+RUNG: MAP MODBUS - RESERVA I05
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %I0.5
+  ST    %M105
+  LD    1
+  [ %MW505 := %I0.5 ]
+
+RUNG: MAP MODBUS - RESERVA I06
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %I0.6
+  ST    %M106
+  LD    1
+  [ %MW506 := %I0.6 ]
+
+RUNG: MAP MODBUS - RESERVA I07
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %I0.7
+  ST    %M107
+  LD    1
+  [ %MW507 := %I0.7 ]
+
+RUNG: MAP MODBUS - RESERVA I08
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %I0.8
+  ST    %M108
+  LD    1
+  [ %MW508 := %I0.8 ]
+
+RUNG: MAP MODBUS - RESERVA I09
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %I0.9
+  ST    %M109
+  LD    1
+  [ %MW509 := %I0.9 ]
+
+RUNG: MAP MODBUS - SERVICO AUXILIAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %I0.10
+  ST    %M110
+  LD    1
+  [ %MW510 := %I0.10 ]
+
+RUNG: MAP MODBUS - BOTAO CLOSE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %I0.11
+  ST    %M111
+  LD    1
+  [ %MW511 := %I0.11 ]
+
+RUNG: MAP MODBUS - BOTAO TRIP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %I0.12
+  ST    %M112
+  LD    1
+  [ %MW512 := %I0.12 ]
+
+RUNG: MAP MODBUS - BOTAO EMERGENCIA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %I0.13
+  ST    %M113
+  LD    1
+  [ %MW513 := %I0.13 ]
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ SAÍDAS (MW600-609)                                                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+RUNG: MAP MODBUS - COMM OK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %Q0.0
+  ST    %M200
+  LD    1
+  [ %MW600 := %Q0.0 ]
+
+RUNG: MAP MODBUS - USINA GERANDO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %Q0.1
+  ST    %M201
+  LD    1
+  [ %MW601 := %Q0.1 ]
+
+RUNG: MAP MODBUS - FALHA
+━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %Q0.2
+  ST    %M202
+  LD    1
+  [ %MW602 := %Q0.2 ]
+
+RUNG: MAP MODBUS - ALARME
+━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %Q0.3
+  ST    %M203
+  LD    1
+  [ %MW603 := %Q0.3 ]
+
+RUNG: MAP MODBUS - EMERGENCIA INVERSORES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %Q0.4
+  ST    %M204
+  LD    1
+  [ %MW604 := %Q0.4 ]
+
+RUNG: MAP MODBUS - RESET RASP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %Q0.5
+  ST    %M205
+  LD    1
+  [ %MW605 := %Q0.5 ]
+
+RUNG: MAP MODBUS - RESET LINK 3G
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %Q0.6
+  ST    %M206
+  LD    1
+  [ %MW606 := %Q0.6 ]
+
+RUNG: MAP MODBUS - RESERVA 1
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %Q0.7
+  ST    %M207
+  LD    1
+  [ %MW607 := %Q0.7 ]
+
+RUNG: MAP MODBUS - RESERVA 2
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %Q0.8
+  ST    %M208
+  LD    1
+  [ %MW608 := %Q0.8 ]
+
+RUNG: MAP MODBUS - RESERVA 3
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  LD    %Q0.9
+  ST    %M209
+  LD    1
+  [ %MW609 := %Q0.9 ]
+
+═══════════════════════════════════════════════════════════════════════════════
+MÉTODO ALTERNATIVO (SE O MÉTODO 1 NÃO FUNCIONAR)
+═══════════════════════════════════════════════════════════════════════════════
+
+Se a sintaxe [ %MW500 := %I0.0 ] não funcionar, use duas operações:
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║ MÉTODO 2: DUAS OPERAÇÕES (SET E RESET)                                    ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  LD    %I0.0                                                               ║
+║  ST    %M100                                                               ║
+║  LD    %I0.0              ; Quando entrada é 1                             ║
+║  [ %MW500 := 1 ]          ; Seta para 1                                    ║
+║  LDN   %I0.0              ; Quando entrada é 0 (negado)                    ║
+║  [ %MW500 := 0 ]          ; Reseta para 0                                  ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════════════════
+PASSO A PASSO NO SOMACHINE BASIC
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Abra o projeto "correto.smbp" no SoMachine Basic
+
+2. Navegue até a seção "Mapeamento Modbus" (Section 6)
+
+3. Para cada RUNG listado acima:
+   
+   a) Clique no rung para editar
+   
+   b) Localize a linha com [ %MWxxx := 1 ]
+   
+   c) Clique na operação para editar
+   
+   d) Adicione uma nova linha ANTES da operação:
+      - Clique em "Insert Line"
+      - Digite: LD 1
+   
+   e) Modifique a operação existente:
+      - Mude de: [ %MWxxx := 1 ]
+      - Para: [ %MWxxx := %Ix.x ] ou [ %MWxxx := %Qx.x ]
+      (use a variável correspondente da linha ST acima)
+
+4. Compile o projeto (F7)
+
+5. Se houver erros, verifique a sintaxe
+
+6. Faça download para o CLP
+
+7. Teste: ligue/desligue entradas e verifique se os MWxxx mudam corretamente
+
+═══════════════════════════════════════════════════════════════════════════════
+VERIFICAÇÃO PÓS-CORREÇÃO
+═══════════════════════════════════════════════════════════════════════════════
+
+Após aplicar as correções e fazer download no CLP:
+
+1. Use o script Python de teste:
+   python3 test_modbus_mapped.py
+
+2. Verifique se os valores MW500-513 e MW600-609 mudam quando:
+   - Você liga/desliga entradas físicas
+   - As saídas mudam de estado
+
+3. Os valores devem SEMPRE refletir o estado atual (0 ou 1)
+
+═══════════════════════════════════════════════════════════════════════════════
+NOTAS IMPORTANTES
+═══════════════════════════════════════════════════════════════════════════════
+
+⚠️  A instrução "LD 1" é necessária porque as operações [ ] no Schneider 
+    precisam de uma condição ativa para executar.
+
+⚠️  Sem o "LD 1", a operação só executa quando a condição anterior for TRUE.
+
+✅  Com "LD 1" + [ %MW := %I ], a operação SEMPRE executa e copia o valor
+    atual do bit para o word.
+
+═══════════════════════════════════════════════════════════════════════════════
+FIM DO DOCUMENTO
+═══════════════════════════════════════════════════════════════════════════════
+
