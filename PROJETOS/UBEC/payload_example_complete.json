@@ -1,0 +1,169 @@
+{
+  "_comment": "EXEMPLO COMPLETO DE PAYLOAD - TODOS OS CAMPOS POSSÍVEIS",
+  "_description": "Este é um exemplo da payload COMPLETA enviada pelo Node-RED para o backend a cada 30 segundos",
+  
+  "device_id": "CLP_SCHNEIDER_TM200CE24R",
+  "timestamp": "2025-11-17T22:55:51.678Z",
+  
+  "location": {
+    "site": "Usina Solar UBEC",
+    "installation": "UBEC Automação",
+    "_notes": "Informações do local da instalação"
+  },
+  
+  "sensors": {
+    "temperaturas": {
+      "ambiente": {
+        "value": 23.5,
+        "unit": "celsius",
+        "_notes": "Temperatura ambiente - Sensor PT100 - Endereço Modbus %MW36"
+      },
+      "quadro_eletrico": {
+        "value": 31.2,
+        "unit": "celsius",
+        "_notes": "Temperatura do quadro elétrico - Sensor PT100 - Endereço Modbus %MW38"
+      },
+      "modulo_fotovoltaico": {
+        "value": 45.6,
+        "unit": "celsius",
+        "_notes": "Temperatura do módulo fotovoltaico - Sensor PT100 - Endereço Modbus %MW40"
+      },
+      "transformador": {
+        "value": 67.8,
+        "unit": "celsius",
+        "_notes": "Temperatura do transformador - Sensor PT100 - Endereço Modbus %MW42 - CRÍTICO se > 80°C"
+      }
+    },
+    "_future_sensors": {
+      "_note": "Campos futuros que PODEM ser adicionados:",
+      "potencia": {
+        "value": 0,
+        "unit": "kW",
+        "_enabled": false
+      },
+      "corrente": {
+        "value": 0,
+        "unit": "A",
+        "_enabled": false
+      },
+      "tensao": {
+        "value": 0,
+        "unit": "V",
+        "_enabled": false
+      }
+    }
+  },
+  
+  "status": {
+    "outputs": {
+      "_description": "10 saídas digitais - Endereços Modbus MW600-609",
+      "comunicacao_ok": true,
+      "usina_gerando": true,
+      "falha": false,
+      "alarme": false,
+      "emergencia_inversores": false,
+      "reset_rasp": false,
+      "reset_link_3g": false,
+      "reserva_1": false,
+      "reserva_2": false,
+      "reserva_3": false,
+      "_notes": "Todos sempre presentes (true/false). NUNCA null ou undefined."
+    },
+    
+    "inputs": {
+      "_description": "14 entradas digitais - Endereços Modbus MW500-513",
+      "dj_geral_aberto": false,
+      "dj_geral_fechado": true,
+      "reserva_i02": false,
+      "reserva_i03": false,
+      "reserva_i04": false,
+      "reserva_i05": false,
+      "reserva_i06": false,
+      "reserva_i07": false,
+      "reserva_i08": false,
+      "reserva_i09": false,
+      "servico_auxiliar": true,
+      "botao_close": false,
+      "botao_trip": false,
+      "botao_emergencia": false,
+      "_notes": "Todos sempre presentes (true/false). NUNCA null ou undefined."
+    }
+  },
+  
+  "alerts": [
+    {
+      "type": "FAULT",
+      "severity": "high",
+      "_when": "Quando status.outputs.falha = true",
+      "_color": "red"
+    },
+    {
+      "type": "ALARM",
+      "severity": "medium",
+      "_when": "Quando status.outputs.alarme = true",
+      "_color": "orange"
+    },
+    {
+      "type": "TEMP_HIGH",
+      "severity": "high",
+      "_when": "Quando sensors.temperaturas.transformador.value > 80",
+      "_color": "red"
+    },
+    {
+      "type": "TEMP_HIGH",
+      "severity": "medium",
+      "_when": "Quando sensors.temperaturas.modulo_fotovoltaico.value > 70",
+      "_color": "orange"
+    },
+    {
+      "type": "EMERGENCY",
+      "severity": "critical",
+      "_when": "Quando status.outputs.emergencia_inversores = true",
+      "_color": "red"
+    },
+    {
+      "type": "EMERGENCY_BUTTON",
+      "severity": "critical",
+      "_when": "Quando status.inputs.botao_emergencia = true",
+      "_color": "red"
+    }
+  ],
+  
+  "_payload_info": {
+    "frequency": "30 seconds",
+    "protocol": "HTTP POST",
+    "endpoint": "/api/clp/telemetry",
+    "content_type": "application/json",
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Device-ID": "CLP_SCHNEIDER_TM200CE24R",
+      "X-Timestamp": "2025-11-17T22:55:51.678Z"
+    },
+    "size_estimate": "1-2 KB per payload",
+    "backup_file": "/home/gabriel/clp_data_backup.jsonl"
+  },
+  
+  "_validation_rules": {
+    "device_id": "string, sempre 'CLP_SCHNEIDER_TM200CE24R'",
+    "timestamp": "string, formato ISO 8601, sempre UTC",
+    "location": "object, sempre presente",
+    "sensors.temperaturas": "object, sempre presente, 4 sensores",
+    "sensors.temperaturas.*.value": "number (float), pode ser negativo",
+    "sensors.temperaturas.*.unit": "string, sempre 'celsius'",
+    "status.outputs": "object, 10 campos booleanos, sempre presentes",
+    "status.inputs": "object, 14 campos booleanos, sempre presentes",
+    "alerts": "array, pode estar vazio [], cada item tem type e severity",
+    "alerts[].type": "string, valores: FAULT|ALARM|TEMP_HIGH|EMERGENCY|EMERGENCY_BUTTON",
+    "alerts[].severity": "string, valores: critical|high|medium|low"
+  },
+  
+  "_backend_recommendations": {
+    "database_schema": "Sugestão: tabela 'telemetry' com colunas: device_id, timestamp, temperatures (JSON), outputs (JSON), inputs (JSON), alerts (JSON)",
+    "indexing": "Criar índices em: device_id, timestamp",
+    "retention": "Sugestão: manter últimos 90 dias de dados",
+    "api_response": "Retornar: {success: true, message: 'Data received', timestamp: ISO8601}",
+    "error_handling": "Retornar HTTP 400 para dados inválidos, HTTP 500 para erros internos",
+    "monitoring": "Alertar se não receber dados por > 2 minutos (4 ciclos perdidos)"
+  }
+}
+
